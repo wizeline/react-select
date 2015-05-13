@@ -221,6 +221,49 @@
 .Select-item-icon:active {
   background-color: #c9e6f2;
 }
+.Select.is-list .dropdown {
+  position: relative;
+}
+.Select.is-list .Select-item {
+  background-color: transparent;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  color: #3f484b;
+  display: block;
+  font-size: 1em;
+  margin: 2px;
+}
+.Select.is-list .Select-item-icon,
+.Select.is-list .Select-item-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+.Select.is-list .Select-item-label {
+  cursor: default;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  padding: 3px 0px;
+}
+.Select.is-list .Select-item-label .Select-item-label__a {
+  color: #3f484b;
+  cursor: pointer;
+}
+.Select.is-list .Select-item-icon {
+  cursor: pointer;
+  float: right;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-right: 1px solid transparent;
+  padding: 2px 0px 4px;
+}
+.Select.is-list .Select-item-icon:hover,
+.Select.is-list .Select-item-icon:focus {
+  background-color: transparent;
+  color: #0077b3;
+}
+.Select.is-list .Select-item-icon:active {
+  background-color: #c9e6f2;
+}
 @keyframes Select-animation-spin {
   to {
     transform: rotate(1turn);
