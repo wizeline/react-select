@@ -169,12 +169,36 @@ var SelectedValuesField = React.createClass({
 	}
 });
 
+var ListSelectField = React.createClass({
+	render: function() {
+		var ops = [
+			{ label: 'Chocolate', value: 'chocolate' },
+			{ label: 'Vanilla', value: 'vanilla' },
+			{ label: 'Strawberry', value: 'strawberry' },
+			{ label: 'Caramel', value: 'caramel' },
+			{ label: 'Cookies and Cream', value: 'cookiescream' },
+			{ label: 'Peppermint', value: 'peppermint' }
+		];
+		return (
+			<div>
+				<label>{this.props.label}</label>
+				<Select
+					list={true}
+					placeholder="Select your favourite(s)"
+					options={ops}
+					onChange={logChange} />
+			</div>
+		);
+	}
+});
+
 
 React.render(
 	<div>
 		<StatesField />
 		<StatesField label="States (non-searchable):" searchable={false} />
 		<MultiSelectField label="Multiselect:"/>
+		<ListSelectField label="List Select:"/>
 		<SelectedValuesField label="Clickable labels (labels as links):" />
 		<RemoteSelectField label="Remote Options:"/>
 	</div>,

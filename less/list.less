@@ -1,0 +1,63 @@
+// 
+// List-Select
+// ------------------------------
+
+
+// Base
+
+.Select.is-list {
+  // Items
+
+  .dropdown {
+    position:relative;
+  }
+
+  .Select-item {
+    background-color: @select-list-item-bg;
+    border-radius: @select-item-border-radius;
+    border: 1px solid @select-list-item-border-color;
+    color: @select-list-item-color;
+    display: block;
+    font-size: @select-item-font-size;
+    margin: @select-item-gutter;
+  }
+
+  // common
+  .Select-item-icon,
+  .Select-item-label {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  // label
+  .Select-item-label {
+    cursor: default;
+    .border-right-radius( @select-item-border-radius );
+    padding: @select-item-padding-vertical @select-list-item-padding-horizontal;
+
+    .Select-item-label__a {
+      color: @select-list-item-color;
+      cursor: pointer;
+    }
+  }
+
+  // icon
+  .Select-item-icon {
+    cursor: pointer;
+    float: right;
+    .border-left-radius( @select-item-border-radius );
+    border-right: 1px solid @select-list-item-border-color;
+
+    // move the baseline up by 1px
+    padding: @select-item-padding-vertical - 1 @select-list-item-padding-horizontal @select-item-padding-vertical + 1;
+
+    &:hover,
+    &:focus {
+      background-color: @select-list-item-bg;
+      color: @select-item-hover-color;
+    }
+    &:active {
+      background-color: @select-item-border-color;
+    }
+  }
+}
