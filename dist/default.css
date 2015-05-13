@@ -242,7 +242,7 @@
   cursor: default;
   border-bottom-right-radius: 2px;
   border-top-right-radius: 2px;
-  padding: 3px 0px;
+  padding: 3px 8px;
 }
 .Select.is-list .Select-item-label .Select-item-label__a {
   color: #3f484b;
@@ -254,7 +254,7 @@
   border-bottom-left-radius: 2px;
   border-top-left-radius: 2px;
   border-right: 1px solid transparent;
-  padding: 2px 0px 4px;
+  padding: 2px 8px 4px;
 }
 .Select.is-list .Select-item-icon:hover,
 .Select.is-list .Select-item-icon:focus {
