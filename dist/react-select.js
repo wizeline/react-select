@@ -594,6 +594,10 @@ var Select = React.createClass({
 		}
 	},
 
+	getIdentifier: function getIdentifier(op) {
+		return op.id ? op.id : op.value;
+	},
+
 	buildMenu: function buildMenu() {
 		var focusedValue = this.state.focusedOption ? this.state.focusedOption.value : null;
 
@@ -620,13 +624,13 @@ var Select = React.createClass({
 			if (op.disabled) {
 				return React.createElement(
 					'div',
-					{ ref: ref, key: 'option-' + op.value, className: optionClass },
+					{ ref: ref, key: 'option-' + this.getIdentifier(op), className: optionClass },
 					op.label
 				);
 			} else {
 				return React.createElement(
 					'div',
-					{ ref: ref, key: 'option-' + op.value, className: optionClass, onMouseEnter: mouseEnter, onMouseLeave: mouseLeave, onMouseDown: mouseDown, onClick: mouseDown },
+					{ ref: ref, key: 'option-' + this.getIdentifier(op), className: optionClass, onMouseEnter: mouseEnter, onMouseLeave: mouseLeave, onMouseDown: mouseDown, onClick: mouseDown },
 					op.label
 				);
 			}
@@ -666,7 +670,7 @@ var Select = React.createClass({
 		if (allowMultiple) {
 			this.state.values.forEach(function (val) {
 				var props = {
-					key: val.value,
+					key: this.getIdentifier(val),
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: this.handleOptionLabelClick.bind(this, val),
 					onRemove: this.removeValue.bind(this, val)
@@ -680,7 +684,7 @@ var Select = React.createClass({
 			}, this);
 		}
 
-		if (this.props.disabled || !this.state.inputValue && (!allowMultiple || !value.length)) {
+		if (this.props.disabled || !this.state.inputValue && (!this.props.multi || !value.length)) {
 			if (this.props.list) {
 				placeholder = React.createElement(
 					'div',

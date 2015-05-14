@@ -588,6 +588,10 @@ var Select = React.createClass({
 		}
 	},
 
+  getIdentifier: function(op) {
+    return op.id ? op.id : op.value;
+  },
+
 	buildMenu: function() {
 		var focusedValue = this.state.focusedOption ? this.state.focusedOption.value : null;
 
@@ -612,9 +616,9 @@ var Select = React.createClass({
 			var mouseDown = this.selectValue.bind(this, op);
 
 			if (op.disabled) {
-				return <div ref={ref} key={'option-' + op.value} className={optionClass}>{op.label}</div>;
+				return <div ref={ref} key={'option-' + this.getIdentifier(op)} className={optionClass}>{op.label}</div>;
 			} else {
-				return <div ref={ref} key={'option-' + op.value} className={optionClass} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} onMouseDown={mouseDown} onClick={mouseDown}>{op.label}</div>;
+				return <div ref={ref} key={'option-' + this.getIdentifier(op)} className={optionClass} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} onMouseDown={mouseDown} onClick={mouseDown}>{op.label}</div>;
 			}
 		}, this);
 
@@ -652,7 +656,7 @@ var Select = React.createClass({
 		if (allowMultiple) {
 			this.state.values.forEach(function(val) {
 				var props = {
-					key: val.value,
+					key: this.getIdentifier(val),
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: this.handleOptionLabelClick.bind(this, val),
 					onRemove: this.removeValue.bind(this, val)
@@ -666,7 +670,7 @@ var Select = React.createClass({
 			}, this);
 		}
 
-		if (this.props.disabled || (!this.state.inputValue && (!allowMultiple || !value.length))) {
+		if (this.props.disabled || (!this.state.inputValue && (!this.props.multi || !value.length))) {
 			if (this.props.list) {
 				placeholder = <div className="Select-placeholder" key="placeholder">{this.state.placeholder}</div>;
 			} else {
