@@ -192,6 +192,31 @@ var ListSelectField = React.createClass({
 	}
 });
 
+var FilterByField = React.createClass({
+  render: function() {
+    var ops = [
+      { label: <label>Chocolate</label>, value: 'chocolate', id: Math.random() },
+      { label: <label>Vanilla</label>, value: 'vanilla' , id: Math.random() },
+      { label: <label>Strawberry</label>, value: 'strawberry' , id: Math.random() } ,
+      { label: <label>Caramel</label>, value: 'caramel' , id: Math.random() },
+      { label: <label>Cookies and Cream</label>, value: 'cookiescream', id: Math.random() },
+      { label: <label>Peppermint</label>, value: 'peppermint', id: Math.random() }
+    ];
+
+    return (
+      <div>
+        <label>{this.props.label}</label>
+        <Select
+          placeholder="Select your favourite(s)"
+          matchProp="value"
+          multi={true}
+          options={ops}
+          onChange={logChange} />
+      </div>
+    );
+  }
+});
+
 
 React.render(
 	<div>
@@ -201,6 +226,7 @@ React.render(
 		<ListSelectField label="List Select:"/>
 		<SelectedValuesField label="Clickable labels (labels as links):" />
 		<RemoteSelectField label="Remote Options:"/>
+    <FilterByField label="Filter on Object (eg id):"/>
 	</div>,
 	document.getElementById('example')
 );

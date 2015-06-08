@@ -71,6 +71,7 @@ var Select = React.createClass({
 	propTypes: {
 		value: React.PropTypes.any, // initial field value
 		multi: React.PropTypes.bool, // multi-value input
+		list: React.PropTypes.bool, // list-value input
 		disabled: React.PropTypes.bool, // whether the Select is disabled or not
 		options: React.PropTypes.array, // array of options
 		delimiter: React.PropTypes.string, // delimiter to use to join multiple values
@@ -256,7 +257,8 @@ var Select = React.createClass({
 		this._optionsFilterString = '';
 
 		var values = this.initValuesArray(value, options),
-		    filteredOptions = this.filterOptions(options, values);
+		    filteredOptions = this.filterOptions(options, values),
+		    allowsMultiple = this.props.multi || this.props.list;
 
 		return {
 			value: values.map(function (v) {
@@ -265,8 +267,8 @@ var Select = React.createClass({
 			values: values,
 			inputValue: '',
 			filteredOptions: filteredOptions,
-			placeholder: !this.props.multi && values.length ? values[0].label : this.props.placeholder,
-			focusedOption: !this.props.multi && values.length ? values[0] : filteredOptions[0]
+			placeholder: !allowsMultiple && values.length ? values[0].label : this.props.placeholder,
+			focusedOption: !allowsMultiple && values.length ? values[0] : filteredOptions[0]
 		};
 	},
 
@@ -304,7 +306,7 @@ var Select = React.createClass({
 	},
 
 	selectValue: function selectValue(value) {
-		if (!this.props.multi) {
+		if (!this.props.multi && !this.props.list) {
 			this.setValue(value);
 		} else if (value) {
 			this.addValue(value);
@@ -411,7 +413,7 @@ var Select = React.createClass({
 
 			case 8:
 				// backspace
-				if (!this.state.inputValue) {
+				if (!this.state.inputValue && !this.props.list) {
 					this.popValue();
 				}
 				return;
@@ -565,7 +567,7 @@ var Select = React.createClass({
 			return this.props.filterOptions.call(this, options, filterValue, exclude);
 		} else {
 			var filterOption = function filterOption(op) {
-				if (this.props.multi && exclude.indexOf(op.value) > -1) return false;
+				if ((this.props.multi || this.props.list) && exclude.indexOf(op.value) > -1) return false;
 				if (this.props.filterOption) return this.props.filterOption.call(this, op, filterValue);
 				var valueTest = String(op.value),
 				    labelTest = String(op.label);
@@ -645,6 +647,10 @@ var Select = React.createClass({
 		}
 	},
 
+	getIdentifier: function getIdentifier(op) {
+		return op.id ? op.id : op.value;
+	},
+
 	buildMenu: function buildMenu() {
 		var focusedValue = this.state.focusedOption ? this.state.focusedOption.value : null;
 
@@ -671,13 +677,13 @@ var Select = React.createClass({
 			if (op.disabled) {
 				return React.createElement(
 					'div',
-					{ ref: ref, key: 'option-' + op.value, className: optionClass },
+					{ ref: ref, key: 'option-' + this.getIdentifier(op), className: optionClass },
 					op.label
 				);
 			} else {
 				return React.createElement(
 					'div',
-					{ ref: ref, key: 'option-' + op.value, className: optionClass, onMouseEnter: mouseEnter, onMouseLeave: mouseLeave, onMouseDown: mouseDown, onClick: mouseDown },
+					{ ref: ref, key: 'option-' + this.getIdentifier(op), className: optionClass, onMouseEnter: mouseEnter, onMouseLeave: mouseLeave, onMouseDown: mouseDown, onClick: mouseDown },
 					op.label
 				);
 			}
@@ -688,6 +694,18 @@ var Select = React.createClass({
 			{ className: 'Select-noresults' },
 			this.props.asyncOptions && !this.state.inputValue ? this.props.searchPromptText : this.props.noResultsText
 		);
+	},
+
+	toggleDropdown: function toggleDropdown(event) {
+		var isOpen = this.state.isOpen;
+		if (isOpen) {
+			this.setState({
+				isOpen: false
+			});
+
+			event.stopPropagation();
+			event.preventDefault();
+		}
 	},
 
 	handleOptionLabelClick: function handleOptionLabelClick(value, event) {
@@ -706,15 +724,18 @@ var Select = React.createClass({
 			'is-focused': this.state.isFocused,
 			'is-loading': this.state.isLoading,
 			'is-disabled': this.props.disabled,
-			'has-value': this.state.value
+			'has-value': this.state.value,
+			'is-list': this.props.list
 		});
 
-		var value = [];
+		var value = [],
+		    placeholder,
+		    allowMultiple = this.props.multi || this.props.list;
 
-		if (this.props.multi) {
+		if (allowMultiple) {
 			this.state.values.forEach(function (val) {
 				var props = {
-					key: val.value,
+					key: this.getIdentifier(val),
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: this.handleOptionLabelClick.bind(this, val),
 					onRemove: this.removeValue.bind(this, val)
@@ -729,15 +750,23 @@ var Select = React.createClass({
 		}
 
 		if (this.props.disabled || !this.state.inputValue && (!this.props.multi || !value.length)) {
-			value.push(React.createElement(
-				'div',
-				{ className: 'Select-placeholder', key: 'placeholder' },
-				this.state.placeholder
-			));
+			if (this.props.list) {
+				placeholder = React.createElement(
+					'div',
+					{ className: 'Select-placeholder', key: 'placeholder' },
+					this.state.placeholder
+				);
+			} else {
+				value.push(React.createElement(
+					'div',
+					{ className: 'Select-placeholder', key: 'placeholder' },
+					this.state.placeholder
+				));
+			}
 		}
 
 		var loading = this.state.isLoading ? React.createElement('span', { className: 'Select-loading', 'aria-hidden': 'true' }) : null;
-		var clear = this.props.clearable && this.state.value && !this.props.disabled ? React.createElement('span', { className: 'Select-clear', title: this.props.multi ? this.props.clearAllText : this.props.clearValueText, 'aria-label': this.props.multi ? this.props.clearAllText : this.props.clearValueText, onMouseDown: this.clearValue, onClick: this.clearValue, dangerouslySetInnerHTML: { __html: '&times;' } }) : null;
+		var clear = this.props.clearable && this.state.value && !this.props.disabled ? React.createElement('span', { className: 'Select-clear', title: allowMultiple ? this.props.clearAllText : this.props.clearValueText, 'aria-label': allowMultiple ? this.props.clearAllText : this.props.clearValueText, onMouseDown: this.clearValue, onClick: this.clearValue, dangerouslySetInnerHTML: { __html: '&times;' } }) : null;
 
 		var menu;
 		var menuProps;
@@ -746,7 +775,7 @@ var Select = React.createClass({
 				ref: 'menu',
 				className: 'Select-menu'
 			};
-			if (this.props.multi) {
+			if (allowMultiple) {
 				menuProps.onMouseDown = this.handleMouseDown;
 			}
 			menu = React.createElement(
@@ -784,6 +813,28 @@ var Select = React.createClass({
 			);
 		}
 
+		if (this.props.list) {
+			return React.createElement(
+				'div',
+				{ ref: 'wrapper', className: selectClass },
+				React.createElement(
+					'div',
+					{ className: 'dropdown' },
+					React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }),
+					React.createElement(
+						'div',
+						{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
+						placeholder,
+						input,
+						React.createElement('span', { className: 'Select-arrow', onMouseDown: this.toggleDropdown }),
+						loading
+					),
+					menu
+				),
+				value
+			);
+		}
+
 		return React.createElement(
 			'div',
 			{ ref: 'wrapper', className: selectClass },
@@ -793,7 +844,7 @@ var Select = React.createClass({
 				{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 				value,
 				input,
-				React.createElement('span', { className: 'Select-arrow' }),
+				React.createElement('span', { className: 'Select-arrow', onMouseDown: this.toggleDropdown }),
 				loading,
 				clear
 			),

@@ -189,14 +189,86 @@ var SelectedValuesField = React.createClass({
 	}
 });
 
+var ListSelectField = React.createClass({
+	displayName: 'ListSelectField',
+
+	render: function render() {
+		var ops = [{ label: 'Chocolate', value: 'chocolate' }, { label: 'Vanilla', value: 'vanilla' }, { label: 'Strawberry', value: 'strawberry' }, { label: 'Caramel', value: 'caramel' }, { label: 'Cookies and Cream', value: 'cookiescream' }, { label: 'Peppermint', value: 'peppermint' }];
+		return React.createElement(
+			'div',
+			null,
+			React.createElement(
+				'label',
+				null,
+				this.props.label
+			),
+			React.createElement(Select, {
+				list: true,
+				placeholder: 'Select your favourite(s)',
+				options: ops,
+				onChange: logChange })
+		);
+	}
+});
+
+var FilterByField = React.createClass({
+	displayName: 'FilterByField',
+
+	render: function render() {
+		var ops = [{ label: React.createElement(
+				'label',
+				null,
+				'Chocolate'
+			), value: 'chocolate', id: Math.random() }, { label: React.createElement(
+				'label',
+				null,
+				'Vanilla'
+			), value: 'vanilla', id: Math.random() }, { label: React.createElement(
+				'label',
+				null,
+				'Strawberry'
+			), value: 'strawberry', id: Math.random() }, { label: React.createElement(
+				'label',
+				null,
+				'Caramel'
+			), value: 'caramel', id: Math.random() }, { label: React.createElement(
+				'label',
+				null,
+				'Cookies and Cream'
+			), value: 'cookiescream', id: Math.random() }, { label: React.createElement(
+				'label',
+				null,
+				'Peppermint'
+			), value: 'peppermint', id: Math.random() }];
+
+		return React.createElement(
+			'div',
+			null,
+			React.createElement(
+				'label',
+				null,
+				this.props.label
+			),
+			React.createElement(Select, {
+				placeholder: 'Select your favourite(s)',
+				matchProp: 'value',
+				multi: true,
+				options: ops,
+				onChange: logChange })
+		);
+	}
+});
+
 React.render(React.createElement(
 	'div',
 	null,
 	React.createElement(StatesField, null),
 	React.createElement(StatesField, { label: 'States (non-searchable):', searchable: false }),
 	React.createElement(MultiSelectField, { label: 'Multiselect:' }),
+	React.createElement(ListSelectField, { label: 'List Select:' }),
 	React.createElement(SelectedValuesField, { label: 'Clickable labels (labels as links):' }),
-	React.createElement(RemoteSelectField, { label: 'Remote Options:' })
+	React.createElement(RemoteSelectField, { label: 'Remote Options:' }),
+	React.createElement(FilterByField, { label: 'Filter on Object (eg id):' })
 ), document.getElementById('example'));
 
 },{"./data/states":2,"react":undefined,"react-select":undefined}],2:[function(require,module,exports){

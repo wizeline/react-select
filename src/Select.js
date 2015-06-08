@@ -629,6 +629,18 @@ var Select = React.createClass({
 		);
 	},
 
+	toggleDropdown: function(event) {
+		var isOpen = this.state.isOpen;
+		if (isOpen) {
+			this.setState({
+				isOpen: false
+			});
+
+			event.stopPropagation();
+			event.preventDefault();
+		}
+	},
+
 	handleOptionLabelClick: function (value, event) {
 		var handler = this.props.onOptionLabelClick;
 
@@ -726,7 +738,7 @@ var Select = React.createClass({
 						<div className="Select-control" ref="control" onKeyDown={this.handleKeyDown} onMouseDown={this.handleMouseDown} onTouchEnd={this.handleMouseDown}>
 						{placeholder}
 						{input}
-							<span className="Select-arrow" />
+							<span className="Select-arrow" onMouseDown={this.toggleDropdown}/>
 						{loading}
 						</div>
 					{menu}
@@ -742,7 +754,7 @@ var Select = React.createClass({
 				<div className="Select-control" ref="control" onKeyDown={this.handleKeyDown} onMouseDown={this.handleMouseDown} onTouchEnd={this.handleMouseDown}>
 					{value}
 					{input}
-					<span className="Select-arrow" />
+					<span className="Select-arrow" onMouseDown={this.toggleDropdown}/>
 					{loading}
 					{clear}
 				</div>

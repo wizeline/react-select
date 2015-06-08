@@ -132,23 +132,23 @@ label {
 .Select-control:hover {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
 }
-.is-searchable.is-open > .Select-control {
+.is-searchable.is-open .Select-control {
   cursor: text;
 }
-.is-open > .Select-control {
+.is-open .Select-control {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   background: white;
   border-color: #b3b3b3 #cccccc #d9d9d9;
 }
-.is-open > .Select-control > .Select-arrow {
+.is-open .Select-control > .Select-arrow {
   border-color: transparent transparent #999999;
   border-width: 0 5px 5px;
 }
-.is-searchable.is-focused:not(.is-open) > .Select-control {
+.is-searchable.is-focused:not(.is-open) .Select-control {
   cursor: text;
 }
-.is-focused:not(.is-open) > .Select-control {
+.is-focused:not(.is-open) .Select-control {
   border-color: #0088cc #0099e6 #0099e6;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 5px -1px rgba(0, 136, 204, 0.5);
 }
@@ -164,7 +164,7 @@ label {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.has-value > .Select-control > .Select-placeholder {
+.has-value .Select-control > .Select-placeholder {
   color: #333333;
 }
 .Select-input > input {
@@ -202,7 +202,7 @@ label {
   right: 30px;
   top: 50%;
 }
-.has-value > .Select-control > .Select-loading {
+.has-value .Select-control > .Select-loading {
   right: 46px;
 }
 .Select-clear {
@@ -233,6 +233,7 @@ label {
   right: 10px;
   top: 14px;
   width: 0;
+  cursor: pointer;
 }
 .Select-menu-outer {
   border-bottom-right-radius: 4px;
@@ -326,6 +327,49 @@ label {
   color: #0077b3;
 }
 .Select-item-icon:active {
+  background-color: #c9e6f2;
+}
+.Select.is-list .dropdown {
+  position: relative;
+}
+.Select.is-list .Select-item {
+  background-color: transparent;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  color: #3f484b;
+  display: block;
+  font-size: 1em;
+  margin: 2px;
+}
+.Select.is-list .Select-item-icon,
+.Select.is-list .Select-item-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+.Select.is-list .Select-item-label {
+  cursor: default;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  padding: 3px 8px;
+}
+.Select.is-list .Select-item-label .Select-item-label__a {
+  color: #3f484b;
+  cursor: pointer;
+}
+.Select.is-list .Select-item-icon {
+  cursor: pointer;
+  float: right;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  border-right: 1px solid transparent;
+  padding: 2px 8px 4px;
+}
+.Select.is-list .Select-item-icon:hover,
+.Select.is-list .Select-item-icon:focus {
+  background-color: transparent;
+  color: #0077b3;
+}
+.Select.is-list .Select-item-icon:active {
   background-color: #c9e6f2;
 }
 @keyframes Select-animation-spin {
