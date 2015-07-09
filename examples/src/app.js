@@ -49,7 +49,6 @@ var StatesField = React.createClass({
 		});
 	},
 	focusStateSelect: function() {
-		console.log(this.refs);
 		this.refs.stateSelect.focus();
 	},
 	render: function() {
