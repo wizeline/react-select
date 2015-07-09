@@ -89,7 +89,7 @@ var Select = React.createClass({
 			isFocused: false,
 			isOpen: false,
 			isLoading: false,
-			onReadOnlyMode: this.props.listReadOnlyMode
+			isReadOnly: this.props.listReadOnlyMode
 		};
 	},
 
@@ -186,7 +186,7 @@ var Select = React.createClass({
 
 	toggleEdit : function(readOnly) {
 		this.setState({
-			onReadOnlyMode : readOnly
+			isReadOnly : readOnly
 		});
 	},
 
@@ -681,7 +681,7 @@ var Select = React.createClass({
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: this.handleOptionLabelClick.bind(this, val),
 					onRemove: this.removeValue.bind(this, val),
-					deletable: !this.state.onReadOnlyMode
+					deletable: !this.state.isReadOnly
 				};
 				for (var key in val) {
 					if (val.hasOwnProperty(key)) {
@@ -741,7 +741,7 @@ var Select = React.createClass({
 		}
 
 		if(this.props.list) {
-			if(!this.state.onReadOnlyMode)
+			if(!this.state.isReadOnly)
 			{
 				var selector = (<div className="dropdown">
 					<input type="hidden" ref="value" name={this.props.name} value={this.state.value}
