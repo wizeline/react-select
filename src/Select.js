@@ -688,7 +688,6 @@ var Select = React.createClass({
 						props[key] = val[key];
 					}
 				}
-				// Aqui pone los values
 				value.push(<Value {...props} />);
 			}, this);
 		}
