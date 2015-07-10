@@ -5,7 +5,8 @@ var Option = React.createClass({
 	displayName: 'Value',
 
 	propTypes: {
-		label: React.PropTypes.string.isRequired
+		label: React.PropTypes.string.isRequired,
+		deletable: React.PropTypes.bool
 	},
 
 	blockEvent: function(event) {
@@ -25,13 +26,17 @@ var Option = React.createClass({
 				</a>
 			);
 		}
-
+		
+		if(this.props.deletable){
+			var removeIcon = (<span className="Select-item-icon"
+								onMouseDown={this.blockEvent}
+								onClick={this.props.onRemove}
+								onTouchEnd={this.props.onRemove}>&times;</span>);
+		}
+		
 		return (
 			<div className="Select-item">
-				<span className="Select-item-icon"
-					onMouseDown={this.blockEvent}
-					onClick={this.props.onRemove}
-					onTouchEnd={this.props.onRemove}>&times;</span>
+				{removeIcon}
 				<span className="Select-item-label">{label}</span>
 			</div>
 		);

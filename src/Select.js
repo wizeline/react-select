@@ -35,6 +35,7 @@ var Select = React.createClass({
 		matchPos: React.PropTypes.string,          // (any|start) match the start or entire string when filtering
 		matchProp: React.PropTypes.string,         // (any|label|value) which option property to filter on
 		inputProps: React.PropTypes.object,        // custom attributes for the Input (in the Select-control) e.g: {'data-foo': 'bar'}
+		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
 
 		/*
 		* Allow user to make option label clickable. When this handler is defined we should
@@ -67,6 +68,7 @@ var Select = React.createClass({
 			matchPos: 'any',
 			matchProp: 'any',
 			inputProps: {},
+			listReadOnlyMode: false,
 
 			onOptionLabelClick: undefined
 		};
@@ -86,7 +88,8 @@ var Select = React.createClass({
 			options: this.props.options,
 			isFocused: false,
 			isOpen: false,
-			isLoading: false
+			isLoading: false,
+			isReadOnly: this.props.listReadOnlyMode
 		};
 	},
 
@@ -179,6 +182,12 @@ var Select = React.createClass({
 
 	focus: function() {
 		this.getInputNode().focus();
+	},
+
+	toggleEdit : function(readOnly) {
+		this.setState({
+			isReadOnly : readOnly
+		});
 	},
 
 	clickedOutsideElement: function(element, event) {
@@ -671,7 +680,8 @@ var Select = React.createClass({
 					key: this.getIdentifier(val),
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: this.handleOptionLabelClick.bind(this, val),
-					onRemove: this.removeValue.bind(this, val)
+					onRemove: this.removeValue.bind(this, val),
+					deletable: !this.state.isReadOnly
 				};
 				for (var key in val) {
 					if (val.hasOwnProperty(key)) {
@@ -731,19 +741,26 @@ var Select = React.createClass({
 		}
 
 		if(this.props.list) {
-			return (
-				<div ref="wrapper" className={selectClass}>
-					<div className="dropdown">
-						<input type="hidden" ref="value" name={this.props.name} value={this.state.value} disabled={this.props.disabled} />
-						<div className="Select-control" ref="control" onKeyDown={this.handleKeyDown} onMouseDown={this.handleMouseDown} onTouchEnd={this.handleMouseDown}>
+			if(!this.state.isReadOnly)
+			{
+				var selector = (<div className="dropdown">
+					<input type="hidden" ref="value" name={this.props.name} value={this.state.value}
+						   disabled={this.props.disabled}/>
+
+					<div className="Select-control" ref="control" onKeyDown={this.handleKeyDown}
+						 onMouseDown={this.handleMouseDown} onTouchEnd={this.handleMouseDown}>
 						{placeholder}
 						{input}
-							<span className="Select-arrow" onMouseDown={this.toggleDropdown}/>
+						<span className="Select-arrow" onMouseDown={this.toggleDropdown}/>
 						{loading}
-						</div>
-					{menu}
 					</div>
-				{value}
+					{menu}
+				</div>);
+			}
+			return (
+				<div ref="wrapper" className={selectClass}>
+					{selector}
+					{value}
 				</div>
 			);
 		}
