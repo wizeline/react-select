@@ -36,6 +36,7 @@ var Select = React.createClass({
 		matchProp: React.PropTypes.string,         // (any|label|value) which option property to filter on
 		inputProps: React.PropTypes.object,        // custom attributes for the Input (in the Select-control) e.g: {'data-foo': 'bar'}
 		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
+		listAboveSelector: React.PropTypes.bool,   // Renders the value list above the Selector
 
 		/*
 		* Allow user to make option label clickable. When this handler is defined we should
@@ -69,6 +70,7 @@ var Select = React.createClass({
 			matchProp: 'any',
 			inputProps: {},
 			listReadOnlyMode: false,
+			listAboveSelector: false,
 
 			onOptionLabelClick: undefined
 		};
@@ -657,7 +659,6 @@ var Select = React.createClass({
 			handler(value, event);
 		}
 	},
-
 	render: function() {
 		var selectClass = classes('Select', this.props.className, {
 			'is-multi': this.props.multi,
@@ -757,12 +758,22 @@ var Select = React.createClass({
 					{menu}
 				</div>);
 			}
-			return (
-				<div ref="wrapper" className={selectClass}>
-					{selector}
-					{value}
-				</div>
-			);
+			
+			if (this.props.listAboveSelector){
+				return (
+					<div ref="wrapper" className={selectClass}>
+						{value}
+						{selector}
+					</div>
+				);
+			} else {
+				return (
+					<div ref="wrapper" className={selectClass}>
+						{selector}
+						{value}
+					</div>
+				);
+			}
 		}
 
 		return (
