@@ -36,6 +36,7 @@ var Select = React.createClass({
 		matchProp: React.PropTypes.string,         // (any|label|value) which option property to filter on
 		inputProps: React.PropTypes.object,        // custom attributes for the Input (in the Select-control) e.g: {'data-foo': 'bar'}
 		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
+		clearValuesOnEsc: React.PropTypes.bool,	   // if true pressing esc when the selector is focused and closed will clear selected values
 
 		/*
 		* Allow user to make option label clickable. When this handler is defined we should
@@ -69,6 +70,7 @@ var Select = React.createClass({
 			matchProp: 'any',
 			inputProps: {},
 			listReadOnlyMode: false,
+			clearValuesOnEsc: false,
 
 			onOptionLabelClick: undefined
 		};
@@ -381,7 +383,7 @@ var Select = React.createClass({
 			case 27: // escape
 				if (this.state.isOpen) {
 					this.resetValue();
-				} else {
+				} else if (this.props.clearValuesOnEsc) {
 					this.clearValue();
 				}
 			break;
