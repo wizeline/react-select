@@ -36,6 +36,8 @@ var Select = React.createClass({
 		matchProp: React.PropTypes.string,         // (any|label|value) which option property to filter on
 		inputProps: React.PropTypes.object,        // custom attributes for the Input (in the Select-control) e.g: {'data-foo': 'bar'}
 		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
+		maxMultiSelection: React.PropTypes.number, // Number of maximum allowed options to select on multi mode
+		replaceIfMax: React.PropTypes.bool,		   // Replace selected values if max selection number is reached
 
 		/*
 		* Allow user to make option label clickable. When this handler is defined we should
@@ -69,6 +71,8 @@ var Select = React.createClass({
 			matchProp: 'any',
 			inputProps: {},
 			listReadOnlyMode: false,
+			maxMultiSelection: -1,
+			replaceIfMax: false,
 
 			onOptionLabelClick: undefined
 		};
@@ -258,13 +262,34 @@ var Select = React.createClass({
 		if (!this.props.multi && !this.props.list) {
 			this.setValue(value);
 		} else if (value) {
-			this.addValue(value);
+			this.addMultiSelectValue(value);
 		}
 		this._unbindCloseMenuIfClickedOutside();
 	},
-
+	
+	addMultiSelectValue: function(value) {
+		if (this.props.maxMultiSelection > 0) {
+			if (this.state.values.length +1 > this.props.maxMultiSelection && this.props.replaceIfMax) {
+				this.replaceValue(value);
+				this.toggleDropdown()
+			} else if (this.state.values.length + 1 == this.props.maxMultiSelection) {
+				this.addValue(value);
+				this.toggleDropdown()
+			} else if (this.state.values.length + 1 <= this.props.maxMultiSelection) {
+				this.addValue(value);
+			}
+		} else if (this.props.maxMultiSelection != 0) {
+			this.addValue(value);
+		}
+	},
+	
 	addValue: function(value) {
 		this.setValue(this.state.values.concat(value));
+	},
+	
+	replaceValue: function(value) {
+		var poped_values = this.state.values.slice(0, this.state.values.length - 1);
+		this.setValue(poped_values.concat(value));
 	},
 
 	popValue: function() {
