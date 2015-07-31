@@ -271,10 +271,6 @@ var Select = React.createClass({
 		if (this.props.maxMultiSelection > 0) {
 			if (this.state.values.length +1 > this.props.maxMultiSelection && this.props.replaceIfMax) {
 				this.replaceValue(value);
-				this.toggleDropdown()
-			} else if (this.state.values.length + 1 == this.props.maxMultiSelection) {
-				this.addValue(value);
-				this.toggleDropdown()
 			} else if (this.state.values.length + 1 <= this.props.maxMultiSelection) {
 				this.addValue(value);
 			}
@@ -331,6 +327,16 @@ var Select = React.createClass({
 		// button, or if the component is disabled, ignore it.
 		if (this.props.disabled || (event.type === 'mousedown' && event.button !== 0)) {
 			return;
+		}
+		
+		if (this.props.maxMultiSelection > 0 && this.state.isOpen) {
+			if (this.state.values.length + 1 > this.props.maxMultiSelection && this.props.replaceIfMax) {
+				this.closeDropdown();
+				return;
+			} else if (this.state.values.length + 1 == this.props.maxMultiSelection) {
+				this.closeDropdown();
+				return;
+			}
 		}
 
 		event.stopPropagation();
@@ -673,6 +679,12 @@ var Select = React.createClass({
 			event.stopPropagation();
 			event.preventDefault();
 		}
+	},
+	
+	closeDropdown: function() {
+		this.setState({
+			isOpen: false
+		}, this._unbindCloseMenuIfClickedOutside);
 	},
 
 	handleOptionLabelClick: function (value, event) {
