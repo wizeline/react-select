@@ -329,14 +329,14 @@ var Select = React.createClass({
 			return;
 		}
 		
-		if (this.props.maxMultiSelection > 0 && this.state.isOpen) {
-			if (this.state.values.length + 1 > this.props.maxMultiSelection && this.props.replaceIfMax) {
-				this.closeDropdown();
-				return;
-			} else if (this.state.values.length + 1 == this.props.maxMultiSelection) {
-				this.closeDropdown();
-				return;
-			}
+		var isMultiLimitedAndOpen = this.props.maxMultiSelection > 0 && this.state.isOpen;
+		var replaceIfMaxValueReached = this.state.values.length >= this.props.maxMultiSelection && this.props.replaceIfMax;
+		// This event is called before the value is added to the state (just after a click on an option), so we count ahead
+		var willReachMaxValue = this.state.values.length + 1 == this.props.maxMultiSelection;
+		
+		if (isMultiLimitedAndOpen && (replaceIfMaxValueReached || willReachMaxValue)) {
+			this.closeDropdown();
+			return;
 		}
 
 		event.stopPropagation();
