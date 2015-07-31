@@ -288,8 +288,8 @@ var Select = React.createClass({
 	},
 	
 	replaceValue: function(value) {
-		var poped_values = this.state.values.slice(0, this.state.values.length - 1);
-		this.setValue(poped_values.concat(value));
+		var remainingValues = this.state.values.slice(0, this.state.values.length - 1);
+		this.setValue(remainingValues.concat(value));
 	},
 
 	popValue: function() {
