@@ -38,6 +38,7 @@ var Select = React.createClass({
 		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
 		maxMultiSelection: React.PropTypes.number, // Number of maximum allowed options to select on multi mode
 		replaceIfMax: React.PropTypes.bool,		   // Replace selected values if max selection number is reached
+		clearValuesOnEsc: React.PropTypes.bool,	   // if true pressing esc when the selector is focused and closed will clear selected values
 
 		/*
 		* Allow user to make option label clickable. When this handler is defined we should
@@ -73,6 +74,7 @@ var Select = React.createClass({
 			listReadOnlyMode: false,
 			maxMultiSelection: -1,
 			replaceIfMax: false,
+			clearValuesOnEsc: false,
 
 			onOptionLabelClick: undefined
 		};
@@ -412,7 +414,7 @@ var Select = React.createClass({
 			case 27: // escape
 				if (this.state.isOpen) {
 					this.resetValue();
-				} else {
+				} else if (this.props.clearValuesOnEsc) {
 					this.clearValue();
 				}
 			break;
