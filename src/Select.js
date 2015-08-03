@@ -36,6 +36,8 @@ var Select = React.createClass({
 		matchProp: React.PropTypes.string,         // (any|label|value) which option property to filter on
 		inputProps: React.PropTypes.object,        // custom attributes for the Input (in the Select-control) e.g: {'data-foo': 'bar'}
 		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
+		maxMultiSelection: React.PropTypes.number, // Number of maximum allowed options to select on multi mode
+		replaceIfMax: React.PropTypes.bool,		   // Replace selected values if max selection number is reached
 		clearValuesOnEsc: React.PropTypes.bool,	   // if true pressing esc when the selector is focused and closed will clear selected values
 
 		/*
@@ -70,6 +72,8 @@ var Select = React.createClass({
 			matchProp: 'any',
 			inputProps: {},
 			listReadOnlyMode: false,
+			maxMultiSelection: -1,
+			replaceIfMax: false,
 			clearValuesOnEsc: false,
 
 			onOptionLabelClick: undefined
@@ -260,13 +264,30 @@ var Select = React.createClass({
 		if (!this.props.multi && !this.props.list) {
 			this.setValue(value);
 		} else if (value) {
-			this.addValue(value);
+			this.addMultiSelectValue(value);
 		}
 		this._unbindCloseMenuIfClickedOutside();
 	},
-
+	
+	addMultiSelectValue: function(value) {
+		if (this.props.maxMultiSelection > 0) {
+			if (this.state.values.length +1 > this.props.maxMultiSelection && this.props.replaceIfMax) {
+				this.replaceValue(value);
+			} else if (this.state.values.length + 1 <= this.props.maxMultiSelection) {
+				this.addValue(value);
+			}
+		} else if (this.props.maxMultiSelection != 0) {
+			this.addValue(value);
+		}
+	},
+	
 	addValue: function(value) {
 		this.setValue(this.state.values.concat(value));
+	},
+	
+	replaceValue: function(value) {
+		var remainingValues = this.state.values.slice(0, this.state.values.length - 1);
+		this.setValue(remainingValues.concat(value));
 	},
 
 	popValue: function() {
@@ -307,6 +328,16 @@ var Select = React.createClass({
 		// if the event was triggered by a mousedown and not the primary
 		// button, or if the component is disabled, ignore it.
 		if (this.props.disabled || (event.type === 'mousedown' && event.button !== 0)) {
+			return;
+		}
+		
+		var isMultiLimitedAndOpen = this.props.maxMultiSelection > 0 && this.state.isOpen;
+		var replaceIfMaxValueReached = this.state.values.length >= this.props.maxMultiSelection && this.props.replaceIfMax;
+		// This event is called before the value is added to the state (just after a click on an option), so we count ahead
+		var willReachMaxValue = this.state.values.length + 1 == this.props.maxMultiSelection;
+		
+		if (isMultiLimitedAndOpen && (replaceIfMaxValueReached || willReachMaxValue)) {
+			this.closeDropdown();
 			return;
 		}
 
@@ -650,6 +681,12 @@ var Select = React.createClass({
 			event.stopPropagation();
 			event.preventDefault();
 		}
+	},
+	
+	closeDropdown: function() {
+		this.setState({
+			isOpen: false
+		}, this._unbindCloseMenuIfClickedOutside);
 	},
 
 	handleOptionLabelClick: function (value, event) {
