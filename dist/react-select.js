@@ -41,6 +41,10 @@ var Select = React.createClass({
 		matchPos: React.PropTypes.string, // (any|start) match the start or entire string when filtering
 		matchProp: React.PropTypes.string, // (any|label|value) which option property to filter on
 		inputProps: React.PropTypes.object, // custom attributes for the Input (in the Select-control) e.g: {'data-foo': 'bar'}
+		listReadOnlyMode: React.PropTypes.bool, // Non editable list mode currently implemented for List select only
+		maxMultiSelection: React.PropTypes.number, // Number of maximum allowed options to select on multi mode
+		replaceIfMax: React.PropTypes.bool, // Replace selected values if max selection number is reached
+		clearValuesOnEsc: React.PropTypes.bool, // if true pressing esc when the selector is focused and closed will clear selected values
 
 		/*
   * Allow user to make option label clickable. When this handler is defined we should
@@ -73,6 +77,10 @@ var Select = React.createClass({
 			matchPos: 'any',
 			matchProp: 'any',
 			inputProps: {},
+			listReadOnlyMode: false,
+			maxMultiSelection: -1,
+			replaceIfMax: false,
+			clearValuesOnEsc: false,
 
 			onOptionLabelClick: undefined
 		};
@@ -92,7 +100,8 @@ var Select = React.createClass({
 			options: this.props.options,
 			isFocused: false,
 			isOpen: false,
-			isLoading: false
+			isLoading: false,
+			isReadOnly: this.props.listReadOnlyMode
 		};
 	},
 
@@ -186,6 +195,12 @@ var Select = React.createClass({
 		this.getInputNode().focus();
 	},
 
+	toggleEdit: function toggleEdit(readOnly) {
+		this.setState({
+			isReadOnly: readOnly
+		});
+	},
+
 	clickedOutsideElement: function clickedOutsideElement(element, event) {
 		var eventTarget = event.target ? event.target : event.srcElement;
 		while (eventTarget != null) {
@@ -256,13 +271,30 @@ var Select = React.createClass({
 		if (!this.props.multi && !this.props.list) {
 			this.setValue(value);
 		} else if (value) {
-			this.addValue(value);
+			this.addMultiSelectValue(value);
 		}
 		this._unbindCloseMenuIfClickedOutside();
 	},
 
+	addMultiSelectValue: function addMultiSelectValue(value) {
+		if (this.props.maxMultiSelection > 0) {
+			if (this.state.values.length + 1 > this.props.maxMultiSelection && this.props.replaceIfMax) {
+				this.replaceValue(value);
+			} else if (this.state.values.length + 1 <= this.props.maxMultiSelection) {
+				this.addValue(value);
+			}
+		} else if (this.props.maxMultiSelection != 0) {
+			this.addValue(value);
+		}
+	},
+
 	addValue: function addValue(value) {
 		this.setValue(this.state.values.concat(value));
+	},
+
+	replaceValue: function replaceValue(value) {
+		var remainingValues = this.state.values.slice(0, this.state.values.length - 1);
+		this.setValue(remainingValues.concat(value));
 	},
 
 	popValue: function popValue() {
@@ -303,6 +335,16 @@ var Select = React.createClass({
 		// if the event was triggered by a mousedown and not the primary
 		// button, or if the component is disabled, ignore it.
 		if (this.props.disabled || event.type === 'mousedown' && event.button !== 0) {
+			return;
+		}
+
+		var isMultiLimitedAndOpen = this.props.maxMultiSelection > 0 && this.state.isOpen;
+		var replaceIfMaxValueReached = this.state.values.length >= this.props.maxMultiSelection && this.props.replaceIfMax;
+		// This event is called before the value is added to the state (just after a click on an option), so we count ahead
+		var willReachMaxValue = this.state.values.length + 1 == this.props.maxMultiSelection;
+
+		if (isMultiLimitedAndOpen && (replaceIfMaxValueReached || willReachMaxValue)) {
+			this.closeDropdown();
 			return;
 		}
 
@@ -382,7 +424,7 @@ var Select = React.createClass({
 				// escape
 				if (this.state.isOpen) {
 					this.resetValue();
-				} else {
+				} else if (this.props.clearValuesOnEsc) {
 					this.clearValue();
 				}
 				break;
@@ -655,6 +697,12 @@ var Select = React.createClass({
 		}
 	},
 
+	closeDropdown: function closeDropdown() {
+		this.setState({
+			isOpen: false
+		}, this._unbindCloseMenuIfClickedOutside);
+	},
+
 	handleOptionLabelClick: function handleOptionLabelClick(value, event) {
 		var handler = this.props.onOptionLabelClick;
 
@@ -685,7 +733,8 @@ var Select = React.createClass({
 					key: this.getIdentifier(val),
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: this.handleOptionLabelClick.bind(this, val),
-					onRemove: this.removeValue.bind(this, val)
+					onRemove: this.removeValue.bind(this, val),
+					deletable: !this.state.isReadOnly
 				};
 				for (var key in val) {
 					if (val.hasOwnProperty(key)) {
@@ -761,23 +810,28 @@ var Select = React.createClass({
 		}
 
 		if (this.props.list) {
-			return React.createElement(
-				'div',
-				{ ref: 'wrapper', className: selectClass },
-				React.createElement(
+			if (!this.state.isReadOnly) {
+				var selector = React.createElement(
 					'div',
 					{ className: 'dropdown' },
-					React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }),
+					React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value,
+						disabled: this.props.disabled }),
 					React.createElement(
 						'div',
-						{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
+						{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown,
+							onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 						placeholder,
 						input,
 						React.createElement('span', { className: 'Select-arrow', onMouseDown: this.toggleDropdown }),
 						loading
 					),
 					menu
-				),
+				);
+			}
+			return React.createElement(
+				'div',
+				{ ref: 'wrapper', className: selectClass },
+				selector,
 				value
 			);
 		}
@@ -815,7 +869,8 @@ var Option = React.createClass({
 	displayName: 'Value',
 
 	propTypes: {
-		label: React.PropTypes.string.isRequired
+		label: React.PropTypes.string.isRequired,
+		deletable: React.PropTypes.bool
 	},
 
 	blockEvent: function blockEvent(event) {
@@ -836,17 +891,21 @@ var Option = React.createClass({
 			);
 		}
 
-		return React.createElement(
-			'div',
-			{ className: 'Select-item' },
-			React.createElement(
+		if (this.props.deletable) {
+			var removeIcon = React.createElement(
 				'span',
 				{ className: 'Select-item-icon',
 					onMouseDown: this.blockEvent,
 					onClick: this.props.onRemove,
 					onTouchEnd: this.props.onRemove },
 				'×'
-			),
+			);
+		}
+
+		return React.createElement(
+			'div',
+			{ className: 'Select-item' },
+			removeIcon,
 			React.createElement(
 				'span',
 				{ className: 'Select-item-label' },
