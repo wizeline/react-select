@@ -26,6 +26,7 @@ var Select = React.createClass({
 		autoload: React.PropTypes.bool, // whether to auto-load the default async options set
 		placeholder: React.PropTypes.string, // field placeholder, displayed when there's no value
 		noResultsText: React.PropTypes.string, // placeholder displayed when there are no matching search results
+		loadingText: React.PropTypes.string, // placeholder displayed when results are still loading
 		clearable: React.PropTypes.bool, // should it be possible to reset value
 		clearValueText: React.PropTypes.string, // title for the "clear" control
 		clearAllText: React.PropTypes.string, // title for the "clear" control when multi: true
@@ -66,6 +67,7 @@ var Select = React.createClass({
 			autoload: true,
 			placeholder: 'Select...',
 			noResultsText: 'No results found',
+			loadingText: 'Loading...',
 			clearable: true,
 			clearValueText: 'Clear value',
 			clearAllText: 'Clear all',
@@ -111,6 +113,9 @@ var Select = React.createClass({
 		this.setState(this.getStateFromValue(this.props.value));
 
 		if (this.props.asyncOptions && this.props.autoload) {
+			this.setState({
+				isLoading: true
+			});
 			this.autoloadAsyncOptions();
 		}
 
@@ -486,6 +491,9 @@ var Select = React.createClass({
 		var self = this;
 		this.loadAsyncOptions('', {}, function () {
 			// update with fetched but don't focus
+			self.setState({
+				isLoading: false
+			});
 			self.setValue(self.props.value, false);
 		});
 	},
@@ -677,12 +685,19 @@ var Select = React.createClass({
 				);
 			}
 		}, this);
-
-		return ops.length ? ops : React.createElement(
-			'div',
-			{ className: 'Select-noresults' },
-			this.props.asyncOptions && !this.state.inputValue ? this.props.searchPromptText : this.props.noResultsText
-		);
+		if (this.state.isLoading && this.props.asyncOptions) {
+			return ops.length ? ops : React.createElement(
+				'div',
+				{ className: 'Select-noresults' },
+				this.props.loadingText
+			);
+		} else {
+			return ops.length ? ops : React.createElement(
+				'div',
+				{ className: 'Select-noresults' },
+				this.props.asyncOptions && !this.state.inputValue ? this.props.searchPromptText : this.props.noResultsText
+			);
+		}
 	},
 
 	toggleDropdown: function toggleDropdown(event) {
