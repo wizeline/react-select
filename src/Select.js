@@ -358,6 +358,10 @@ var Select = React.createClass({
 		}
 	},
 
+	selectText: function() {
+		this.getInputNode().select();
+	},
+
 	handleInputFocus: function(event) {
 		var newIsOpen = this.state.isOpen || this._openAfterFocus;
 		this.setState({
@@ -802,7 +806,7 @@ var Select = React.createClass({
 					<input type="hidden" ref="value" name={this.props.name} value={this.state.value}
 						   disabled={this.props.disabled}/>
 
-					<div className="Select-control" ref="control" onKeyDown={this.handleKeyDown}
+					<div className="Select-control" ref="control" onClick={this.selectText} onKeyDown={this.handleKeyDown}
 						 onMouseDown={this.handleMouseDown} onTouchEnd={this.handleMouseDown}>
 						{placeholder}
 						{input}
