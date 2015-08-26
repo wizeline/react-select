@@ -4,9 +4,9 @@
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
-var Input = (typeof window !== "undefined" ? window.AutosizeInput : typeof global !== "undefined" ? global.AutosizeInput : null);
-var classes = (typeof window !== "undefined" ? window.classNames : typeof global !== "undefined" ? global.classNames : null);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var Input = (typeof window !== "undefined" ? window['AutosizeInput'] : typeof global !== "undefined" ? global['AutosizeInput'] : null);
+var classes = (typeof window !== "undefined" ? window['classNames'] : typeof global !== "undefined" ? global['classNames'] : null);
 var Value = require('./Value');
 
 var requestId = 0;
@@ -363,6 +363,10 @@ var Select = React.createClass({
 			this._openAfterFocus = true;
 			this.getInputNode().focus();
 		}
+	},
+
+	selectText: function selectText() {
+		this.getInputNode().select();
 	},
 
 	handleInputFocus: function handleInputFocus(event) {
@@ -833,7 +837,7 @@ var Select = React.createClass({
 						disabled: this.props.disabled }),
 					React.createElement(
 						'div',
-						{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown,
+						{ className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown,
 							onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 						placeholder,
 						input,
@@ -857,7 +861,7 @@ var Select = React.createClass({
 			React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }),
 			React.createElement(
 				'div',
-				{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
+				{ className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 				value,
 				input,
 				React.createElement('span', { className: 'Select-arrow', onMouseDown: this.toggleDropdown }),
@@ -877,7 +881,7 @@ module.exports = Select;
 (function (global){
 'use strict';
 
-var React = (typeof window !== "undefined" ? window.React : typeof global !== "undefined" ? global.React : null);
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var Option = React.createClass({
 
