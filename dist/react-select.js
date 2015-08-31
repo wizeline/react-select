@@ -164,7 +164,10 @@ var Select = React.createClass({
 			});
 		}
 		if (newProps.value !== this.state.value) {
-			this.setState(this.getStateFromValue(newProps.value, newProps.options));
+			var stateChanges = this.getStateFromValue(newProps.value, newProps.options);
+			stateChanges.isLoading = false;
+			delete stateChanges.inputValue;
+			this.setState(stateChanges);
 		}
 	},
 

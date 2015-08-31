@@ -10,7 +10,7 @@ var React = require('react'),
     Select = require('react-select');
 
 var STATES = require('./data/states');
-
+var listReadOnly = false;
 function logChange(value) {
 	console.log('Select value changed: ' + value);
 }
@@ -192,6 +192,10 @@ var SelectedValuesField = React.createClass({
 var ListSelectField = React.createClass({
 	displayName: 'ListSelectField',
 
+	toggleEdit: function toggleEdit() {
+		listReadOnly = !listReadOnly;
+		this.refs.listSelect.toggleEdit(listReadOnly);
+	},
 	render: function render() {
 		var ops = [{ label: 'Chocolate', value: 'chocolate' }, { label: 'Vanilla', value: 'vanilla' }, { label: 'Strawberry', value: 'strawberry' }, { label: 'Caramel', value: 'caramel' }, { label: 'Cookies and Cream', value: 'cookiescream' }, { label: 'Peppermint', value: 'peppermint' }];
 		return React.createElement(
@@ -203,10 +207,21 @@ var ListSelectField = React.createClass({
 				this.props.label
 			),
 			React.createElement(Select, {
+				ref: 'listSelect',
 				list: true,
 				placeholder: 'Select your favourite(s)',
 				options: ops,
-				onChange: logChange })
+				onChange: logChange,
+				listReadOnlyMode: listReadOnly }),
+			React.createElement(
+				'div',
+				{ className: 'form-toolbar' },
+				React.createElement(
+					'button',
+					{ type: 'button', onClick: this.toggleEdit },
+					'Toggle read only'
+				)
+			)
 		);
 	}
 });
