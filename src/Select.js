@@ -151,7 +151,7 @@ var Select = React.createClass({
 	},
 
 	componentWillReceiveProps: function(newProps) {
-		if (JSON.stringify(newProps.options) !== JSON.stringify(this.props.options)) {
+		if (newProps.options !== this.props.options) {
 			this.setState({
 				options: newProps.options,
 				filteredOptions: this.filterOptions(newProps.options)
