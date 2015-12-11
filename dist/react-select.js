@@ -1058,7 +1058,7 @@ var Select = React.createClass({
 
 		if (this.props.list) {
 			if (!this.state.isReadOnly) {
-				var selector = React.createElement('div', { className: 'dropdown' }, React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }), React.createElement('div', { className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, nMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown }, placeholder, input, loading, clear, arrow), menu);
+				var selector = React.createElement('div', { className: 'dropdown' }, React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }), React.createElement('div', { className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown }, placeholder, input, loading, clear, arrow), menu);
 			}
 			return React.createElement('div', { ref: 'wrapper', className: selectClass }, selector, value);
 		}
