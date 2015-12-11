@@ -1000,7 +1000,7 @@ var Select = React.createClass({
 					React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }),
 					React.createElement(
 						'div',
-						{ className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, nMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
+						{ className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 						placeholder,
 						input,
 						loading,
