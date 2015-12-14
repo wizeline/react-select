@@ -188,7 +188,7 @@ var Select = React.createClass({
 
 	componentWillReceiveProps (newProps) {
 			var optionsChanged = false;
-			if (JSON.stringify(newProps.options) !== JSON.stringify(this.props.options)) {
+			if (newProps.options !== this.props.options) {
 				optionsChanged = true;
 				this.setState({
 					options: newProps.options,
