@@ -19,7 +19,7 @@ var requestId = 0;
 var Select = React.createClass({
 
 	displayName: 'Select',
-	childKeyId: 0,
+	valueKeyId: 0,
 
 	propTypes: {
 		addLabelText: React.PropTypes.string,      // placeholder displayed when you want to add a label on a multi-value input
@@ -771,7 +771,8 @@ var Select = React.createClass({
 	},
 
 	getIdentifier: function(op) {
-	    return op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+	    var key = op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+		return !key ? this.valueKeyId++ : key;
 	},
 
 	renderOptionLabel (op) {
@@ -808,7 +809,7 @@ var Select = React.createClass({
 			});
 			var ref = isFocused ? 'focused' : null;
 			var optionResult = React.createElement(this.props.optionComponent, {
-				key: 'option-' + this.getIdentifier(op) + this.childKeyId++,
+				key: 'option-' + this.getIdentifier(op),
 				className: optionClass,
 				renderFunc: renderLabel,
 				mouseDown: this.selectValue,
@@ -881,7 +882,7 @@ var Select = React.createClass({
 				var onOptionLabelClick = this.handleOptionLabelClick.bind(this, val);
 				var onRemove = this.removeValue.bind(this, val);
 				var valueComponent = React.createElement(this.props.valueComponent, {
-					key: this.getIdentifier(val) + '-value-' + this.childKeyId++,
+					key: this.getIdentifier(val),
 					option: val,
 					renderer: renderLabel,
 					optionLabelClick: !!this.props.onOptionLabelClick,
@@ -905,7 +906,7 @@ var Select = React.createClass({
 			} else {
 				if (this.props.valueRenderer && !!this.state.values.length) {
 					value.push(React.createElement(Value, {
-						key: this.childKeyId++,
+						key: 0,
 						option: val,
 						renderer: this.props.valueRenderer,
 						disabled: this.props.disabled }));
