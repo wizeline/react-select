@@ -99,6 +99,7 @@ var requestId = 0;
 var Select = React.createClass({
 
 	displayName: 'Select',
+	childKeyId: 0,
 
 	propTypes: {
 		addLabelText: React.PropTypes.string, // placeholder displayed when you want to add a label on a multi-value input
@@ -368,7 +369,6 @@ var Select = React.createClass({
 				return v[_this4.props.valueKey];
 			}).join(this.props.delimiter);
 		}
-
 		return {
 			value: valueForState,
 			values: values,
@@ -711,7 +711,7 @@ var Select = React.createClass({
 		if (this.props.cacheAsyncResults) {
 			for (var i = 0; i <= input.length; i++) {
 				var cacheKey = input.slice(0, i);
-				if (this._optionsCache[cacheKey] && (input === cacheKey || this._optionsCache[cacheKey].complete)) {
+				if (this._optionsCache[cacheKey] && (input && input.length && input[0] === cacheKey[0] || this._optionsCache[cacheKey].complete)) {
 					var options = this._optionsCache[cacheKey].options;
 					var filteredOptions = this.filterOptions(options);
 					var newState = {
@@ -899,7 +899,7 @@ var Select = React.createClass({
 			});
 			var ref = isFocused ? 'focused' : null;
 			var optionResult = React.createElement(this.props.optionComponent, {
-				key: 'option-' + this.getIdentifier(op),
+				key: 'option-' + this.getIdentifier(op) + this.childKeyId++,
 				className: optionClass,
 				renderFunc: renderLabel,
 				mouseDown: this.selectValue,
@@ -972,7 +972,7 @@ var Select = React.createClass({
 				var onOptionLabelClick = this.handleOptionLabelClick.bind(this, val);
 				var onRemove = this.removeValue.bind(this, val);
 				var valueComponent = React.createElement(this.props.valueComponent, {
-					key: this.getIdentifier(val),
+					key: this.getIdentifier(val) + '-value-' + this.childKeyId++,
 					option: val,
 					renderer: renderLabel,
 					optionLabelClick: !!this.props.onOptionLabelClick,
@@ -996,7 +996,7 @@ var Select = React.createClass({
 			} else {
 				if (this.props.valueRenderer && !!this.state.values.length) {
 					value.push(React.createElement(Value, {
-						key: 0,
+						key: this.childKeyId++,
 						option: val,
 						renderer: this.props.valueRenderer,
 						disabled: this.props.disabled }));
