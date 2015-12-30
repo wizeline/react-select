@@ -99,6 +99,7 @@ var requestId = 0;
 var Select = React.createClass({
 
 	displayName: 'Select',
+	valueKeyId: 0,
 
 	propTypes: {
 		addLabelText: React.PropTypes.string, // placeholder displayed when you want to add a label on a multi-value input
@@ -272,7 +273,7 @@ var Select = React.createClass({
 		var _this2 = this;
 
 		var optionsChanged = false;
-		if (JSON.stringify(newProps.options) !== JSON.stringify(this.props.options)) {
+		if (newProps.options !== this.props.options) {
 			optionsChanged = true;
 			this.setState({
 				options: newProps.options,
@@ -368,7 +369,6 @@ var Select = React.createClass({
 				return v[_this4.props.valueKey];
 			}).join(this.props.delimiter);
 		}
-
 		return {
 			value: valueForState,
 			values: values,
@@ -711,7 +711,7 @@ var Select = React.createClass({
 		if (this.props.cacheAsyncResults) {
 			for (var i = 0; i <= input.length; i++) {
 				var cacheKey = input.slice(0, i);
-				if (this._optionsCache[cacheKey] && (input === cacheKey || this._optionsCache[cacheKey].complete)) {
+				if (this._optionsCache[cacheKey] && (input && input.length && input[0] === cacheKey[0] || this._optionsCache[cacheKey].complete)) {
 					var options = this._optionsCache[cacheKey].options;
 					var filteredOptions = this.filterOptions(options);
 					var newState = {
@@ -862,7 +862,13 @@ var Select = React.createClass({
 	},
 
 	getIdentifier: function getIdentifier(op) {
-		return op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+		var key = op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+
+		if (op.id) {
+			return op.id;
+		}
+
+		return !key ? this.valueKeyId++ : key;
 	},
 
 	renderOptionLabel: function renderOptionLabel(op) {
