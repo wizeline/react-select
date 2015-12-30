@@ -771,7 +771,12 @@ var Select = React.createClass({
 	},
 
 	getIdentifier: function(op) {
-	    var key = op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+		var key = op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+
+		if(op.id) {
+			return op.id;
+		}
+
 		return !key ? this.valueKeyId++ : key;
 	},
 
