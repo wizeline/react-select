@@ -16,13 +16,13 @@
 @select-input-border-radius:       4px;
 @select-input-border-focus:        #08c; // blue
 @select-input-border-width:        1px;
-@select-input-height:              36px;
+@select-input-height:              26px;
 @select-input-internal-height:     (@select-input-height - (@select-input-border-width * 2));
 @select-input-placeholder:         #aaa;
 @select-text-color:                #333;
 
 @select-padding-vertical:          8px;
-@select-padding-horizontal:        5px;
+@select-padding-horizontal:        10px;
 
 // menu options
 @select-menu-zindex:               1000;
@@ -36,10 +36,11 @@
 @select-noresults-color:           lighten(@select-text-color, 40%);
 
 // clear "x" button
-@select-clear-size:                floor((@select-input-height / 2));
+@select-clear-size:                18px;
 @select-clear-color:               #999;
 @select-clear-hover-color:         #D0021B; // red
-@select-clear-width:               (@select-input-internal-height / 2);
+@select-clear-width:               @select-input-height;
+@select-clear-vertical-adjust:     -4px;
 
 // arrow indicator
 @select-arrow-color:               #999;
@@ -50,10 +51,11 @@
 @select-loading-size:              16px;
 @select-loading-color:             @select-text-color;
 @select-loading-color-bg:          @select-input-border-color;
+@select-loading-vertical-adjust:   @select-clear-vertical-adjust;
 
 // multi-select item
 @select-item-border-radius:        2px;
-@select-item-gutter:               5px;
+@select-item-gutter:               3px;
 @select-item-padding-vertical:     2px;
 @select-item-padding-horizontal:   5px;
 @select-item-font-size:            .9em;

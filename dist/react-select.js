@@ -95,11 +95,11 @@ var SingleValue = require('./SingleValue');
 var Option = require('./Option');
 
 var requestId = 0;
+var noValueKeyId = 0;
 
 var Select = React.createClass({
 
 	displayName: 'Select',
-	valueKeyId: 0,
 
 	propTypes: {
 		addLabelText: React.PropTypes.string, // placeholder displayed when you want to add a label on a multi-value input
@@ -729,6 +729,10 @@ var Select = React.createClass({
 					return;
 				}
 			}
+		} else {
+			// fallback. Otherwise the callback is never called and the new state is never applied.
+			this.setState(state);
+			if (callback) callback.call(this, state);
 		}
 
 		var optionsResponseHandler = function optionsResponseHandler(err, data) {
@@ -862,13 +866,15 @@ var Select = React.createClass({
 	},
 
 	getIdentifier: function getIdentifier(op) {
-		var key = op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+		var keyToReturn = '';
 
 		if (op.id) {
 			return op.id;
+		} else {
+			keyToReturn = '' + noValueKeyId++;
 		}
 
-		return !key ? this.valueKeyId++ : key;
+		return keyToReturn;
 	},
 
 	renderOptionLabel: function renderOptionLabel(op) {
@@ -1064,12 +1070,12 @@ var Select = React.createClass({
 
 		if (this.props.list) {
 			if (!this.state.isReadOnly) {
-				var selector = React.createElement('div', { className: 'dropdown' }, React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }), React.createElement('div', { className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown }, placeholder, input, loading, clear, arrow), menu);
+				var selector = React.createElement('div', { className: 'dropdown' }, React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }), React.createElement('div', { className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown }, placeholder, input, arrow, clear, loading), menu);
 			}
 			return React.createElement('div', { ref: 'wrapper', className: selectClass }, selector, value);
 		}
 
-		return React.createElement('div', { ref: 'wrapper', className: selectClass }, React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }), React.createElement('div', { className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown }, value, input, loading, clear, arrow), menu);
+		return React.createElement('div', { ref: 'wrapper', className: selectClass }, React.createElement('input', { type: 'hidden', ref: 'value', name: this.props.name, value: this.state.value, disabled: this.props.disabled }), React.createElement('div', { className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown }, value, input, arrow, clear, loading), menu);
 	}
 });
 

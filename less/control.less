@@ -32,7 +32,6 @@
 	border: @select-input-border-width solid @select-input-border-color;
 	color: @select-text-color;
 	cursor: default;
-	display: table;
 	height: @select-input-height;
 	outline: none;
 	overflow: hidden;
@@ -80,9 +79,9 @@
 	bottom: 0;
 	color: @select-input-placeholder;
 	left: 0;
-	line-height: @select-input-internal-height;
-	padding-left: @select-padding-horizontal;
-	padding-right: @select-padding-horizontal;
+	line-height: @select-input-height;
+	height: @select-input-height;
+	padding: 0 @select-padding-horizontal;
 	position: absolute;
 	right: 0;
 	top: 0;
@@ -124,10 +123,7 @@
 
 .Select-input {
 	// inherits `display: inline-block` from "react-input-autosize"
-	height: @select-input-internal-height;
-	padding-left: @select-padding-horizontal;
-	padding-right: @select-padding-horizontal;
-	vertical-align: middle;
+	position: absolute;
 
 	> input {
 		background: none transparent;
@@ -137,7 +133,6 @@
 		display: inline-block;
 		font-family: inherit;
 		font-size: inherit;
-		height: @select-input-internal-height;
 		margin: 0;
 		outline: none;
 		padding: 0;
@@ -158,11 +153,12 @@
 // loading indicator
 .Select-loading-zone {
 	cursor: pointer;
-	display: table-cell;
 	position: relative;
 	text-align: center;
-	vertical-align: middle;
 	width: @select-loading-size;
+	float: right;
+	padding-right: @select-arrow-width;
+	top: @select-loading-vertical-adjust;
 }
 
 .has-value .Select-control > .Select-loading {
@@ -181,11 +177,12 @@
 	.animation( Select-animation-fadeIn 200ms );
 	color: @select-clear-color;
 	cursor: pointer;
-	display: table-cell;
 	position: relative;
 	text-align: center;
-	vertical-align: middle;
 	width: @select-clear-width;
+	float: right;
+	padding-right: @select-arrow-width;
+	top: @select-clear-vertical-adjust;
 
 	&:hover {
 		color: @select-clear-hover-color;
@@ -205,11 +202,10 @@
 
 .Select-arrow-zone {
 	cursor: pointer;
-	display: table-cell;
 	position: relative;
 	text-align: center;
-	vertical-align: middle;
 	width: (@select-arrow-width * 5);
+	float: right;
 	padding-right: @select-arrow-width;
 }
 

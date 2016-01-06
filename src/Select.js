@@ -15,11 +15,11 @@ var SingleValue = require('./SingleValue');
 var Option = require('./Option');
 
 var requestId = 0;
+var noValueKeyId = 0;
 
 var Select = React.createClass({
 
 	displayName: 'Select',
-	valueKeyId: 0,
 
 	propTypes: {
 		addLabelText: React.PropTypes.string,      // placeholder displayed when you want to add a label on a multi-value input
@@ -637,6 +637,11 @@ var Select = React.createClass({
 				}
 			}
 		}
+		else {
+			// fallback. Otherwise the callback is never called and the new state is never applied.
+			this.setState(state);
+			if(callback) callback.call(this, state);
+		}
 
 		var optionsResponseHandler = (err, data) => {
 			if (err) throw err;
@@ -771,13 +776,17 @@ var Select = React.createClass({
 	},
 
 	getIdentifier: function(op) {
-		var key = op[this.props.labelKey] ? op[this.props.labelKey] : op[this.props.valueKey];
+		var keyToReturn = '';
 
-		if(op.id) {
+		if(op.id)
+		{
 			return op.id;
 		}
+		else {
+			keyToReturn = '' + noValueKeyId++;
+		}
 
-		return !key ? this.valueKeyId++ : key;
+		return keyToReturn;
 	},
 
 	renderOptionLabel (op) {
@@ -1010,9 +1019,9 @@ var Select = React.createClass({
 						{ className: 'Select-control', ref: 'control', onClick: this.selectText, onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 						placeholder,
 						input,
-						loading,
+						arrow,
 						clear,
-						arrow
+						loading
 					),
 					menu
 				);
@@ -1034,9 +1043,9 @@ var Select = React.createClass({
 				{ className: 'Select-control', ref: 'control', onKeyDown: this.handleKeyDown, onMouseDown: this.handleMouseDown, onTouchEnd: this.handleMouseDown },
 				value,
 				input,
-				loading,
+				arrow,
 				clear,
-				arrow
+				loading,
 			),
 			menu
 		);
