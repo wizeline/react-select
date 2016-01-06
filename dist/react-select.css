@@ -104,7 +104,6 @@
   display: inline-block;
   font-family: inherit;
   font-size: inherit;
-  /*height: @select-input-internal-height;*/
   margin: 0;
   outline: none;
   padding: 0;
@@ -257,7 +256,7 @@
   padding: 0;
 }
 .Select--multi.has-value .Select-input {
-  margin-left: 3px;
+  margin-left: 2px;
 }
 .Select-item {
   background-color: #f2f9fc;
@@ -265,9 +264,9 @@
   border: 1px solid #c9e6f2;
   color: #08c;
   display: inline-block;
-  font-size: 0.9em;
-  margin-left: 3px;
-  margin-top: 3px;
+  font-size: 1em;
+  margin-left: 2px;
+  margin-top: 2px;
   vertical-align: top;
 }
 .Select-item-icon,
@@ -323,8 +322,8 @@
   border: 1px solid transparent;
   color: #3F484B;
   display: block;
-  font-size: 0.9em;
-  margin: 3px;
+  font-size: 1em;
+  margin: 2px;
 }
 .Select.is-list .Select-item-icon,
 .Select.is-list .Select-item-label {
