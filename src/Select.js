@@ -203,7 +203,7 @@ var Select = React.createClass({
 						newProps.placeholder
 					);
 					stateChanges.isLoading = false;
-					//delete stateChanges.inputValue;
+					delete stateChanges.inputValue;
 					this.setState(stateChanges);
 				};
 				if (this.props.asyncOptions) {
@@ -285,7 +285,6 @@ var Select = React.createClass({
 		return {
 			value: valueForState,
 			values: values,
-			//inputValue: '',
 			filteredOptions: filteredOptions,
 			placeholder: !allowsMultiple && values.length ? values[0][this.props.labelKey] : placeholder,
 			focusedOption: focusedOption
@@ -506,7 +505,6 @@ var Select = React.createClass({
 		this._blurTimeout = setTimeout(() => {
 			if (this._focusAfterUpdate || !this.isMounted()) return;
 			this.setState({
-				//inputValue: '',
 				isFocused: false,
 				isOpen: false
 			});
@@ -736,7 +734,6 @@ var Select = React.createClass({
 		if (!this.state.isOpen) {
 			this.setState({
 				isOpen: true,
-				//inputValue: '',
 				focusedOption: this.state.focusedOption || ops[dir === 'next' ? 0 : ops.length - 1]
 			}, this._bindCloseMenuIfClickedOutside);
 			return;
