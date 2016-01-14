@@ -207,7 +207,7 @@ var Select = React.createClass({
 					this.setState(stateChanges);
 				};
 				if (this.props.asyncOptions) {
-					this.loadAsyncOptions(this.state.inputValue, {}, setState);//newProps.value
+					this.loadAsyncOptions(newProps.value, {}, setState);
 				} else {
 					setState();
 				}
