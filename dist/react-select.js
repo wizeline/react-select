@@ -372,7 +372,6 @@ var Select = React.createClass({
 		return {
 			value: valueForState,
 			values: values,
-			inputValue: '',
 			filteredOptions: filteredOptions,
 			placeholder: !allowsMultiple && values.length ? values[0][this.props.labelKey] : placeholder,
 			focusedOption: focusedOption
@@ -588,7 +587,6 @@ var Select = React.createClass({
 		this._blurTimeout = setTimeout(function () {
 			if (_this7._focusAfterUpdate || !_this7.isMounted()) return;
 			_this7.setState({
-				inputValue: '',
 				isFocused: false,
 				isOpen: false
 			});
@@ -711,7 +709,7 @@ var Select = React.createClass({
 		if (this.props.cacheAsyncResults) {
 			for (var i = 0; i <= input.length; i++) {
 				var cacheKey = input.slice(0, i);
-				if (this._optionsCache[cacheKey] && (input && input.length && input[0] === cacheKey[0] || this._optionsCache[cacheKey].complete)) {
+				if (this._optionsCache[cacheKey] && (input === cacheKey || this._optionsCache[cacheKey].complete)) {
 					var options = this._optionsCache[cacheKey].options;
 					var filteredOptions = this.filterOptions(options);
 					var newState = {
@@ -827,7 +825,6 @@ var Select = React.createClass({
 		if (!this.state.isOpen) {
 			this.setState({
 				isOpen: true,
-				inputValue: '',
 				focusedOption: this.state.focusedOption || ops[dir === 'next' ? 0 : ops.length - 1]
 			}, this._bindCloseMenuIfClickedOutside);
 			return;
