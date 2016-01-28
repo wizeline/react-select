@@ -938,13 +938,6 @@ var Select = React.createClass({
 			React.createElement('span', { className: 'Select-loading' })
 		) : null;
 
-		// clear "x" button
-		var clear = this.props.clearable && this.state.value && !this.props.disabled && !this.isLoading() ? React.createElement(
-			'span',
-			{ className: 'Select-clear-zone', title: allowMultiple ? this.props.clearAllText : this.props.clearValueText, 'aria-label': allowMultiple ? this.props.clearAllText : this.props.clearValueText, onMouseDown: this.clearValue, onTouchEnd: this.clearValue, onClick: this.clearValue },
-			React.createElement('span', { className: 'Select-clear', dangerouslySetInnerHTML: { __html: '&times;' } })
-		) : null;
-
 		// indicator arrow
 		var arrow = React.createElement(
 			'span',
@@ -1016,7 +1009,6 @@ var Select = React.createClass({
 						placeholder,
 						input,
 						arrow,
-						clear,
 						loading
 					),
 					menu
@@ -1040,7 +1032,6 @@ var Select = React.createClass({
 				value,
 				input,
 				arrow,
-				clear,
 				loading,
 			),
 			menu
