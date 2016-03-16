@@ -12,7 +12,8 @@ var Value = React.createClass({
 		option: React.PropTypes.object.isRequired,        // option passed to component
 		optionLabelClick: React.PropTypes.bool,           // indicates if onOptionLabelClick should be handled
 		renderer: React.PropTypes.func,                   // method to render option label passed to ReactSelect
-		deletable: React.PropTypes.bool					  // indicates if the value can be deleted
+		deletable: React.PropTypes.bool,					  // indicates if the value can be deleted
+		overlay: React.PropTypes.node               // Popover overlay for deletable X icon
 	},
 
 	blockEvent (event) {
@@ -24,6 +25,20 @@ var Value = React.createClass({
 			this.props.onRemove(event);
 		}
 	},
+
+  getInitialState () {
+    return {
+      popOverOpen: false
+    };
+  },
+
+  _showPopover () {
+    this.setState({ popOverOpen: true });
+  },
+
+  _hidePopover () {
+    this.setState({ popOverOpen: false });
+  },
 
 	render () {
 		var label = this.props.option.label;
@@ -57,11 +72,14 @@ var Value = React.createClass({
 		}
 
 		var removeIcon;
+		var popOverContent = this.state.popOverOpen ? this.props.overlay : null;
 		if (this.props.deletable) {
 			removeIcon = React.createElement(
 				'span',
 				{ className: 'Select-item-icon',
 					onMouseDown: this.blockEvent,
+					onMouseEnter: this._showPopover,
+	        onMouseLeave: this._hidePopover,
 					onClick: this.handleOnRemove,
 					onTouchEnd: this.handleOnRemove },
 				'×'
@@ -72,7 +90,9 @@ var Value = React.createClass({
 			'div',
 			{ className: classes('Select-item', this.props.option.className),
 				style: this.props.option.style,
-				title: this.props.option.title },
+				title: this.props.option.title,
+				onMouseOut: this._hidePopover },
+			popOverContent,
 			removeIcon,
 			React.createElement(
 				'span',
