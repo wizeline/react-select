@@ -65,11 +65,12 @@ var Select = React.createClass({
 		valueKey: React.PropTypes.string,          // path of the label value in option objects
 		valueRenderer: React.PropTypes.func,        // valueRenderer: function (option) {}
 
-        /* New for wizeline react-select */
-        listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
+		/* New for wizeline react-select */
+		listReadOnlyMode: React.PropTypes.bool,	   // Non editable list mode currently implemented for List select only
 		maxMultiSelection: React.PropTypes.number, // Number of maximum allowed options to select on multi mode
 		replaceIfMax: React.PropTypes.bool,		   // Replace selected values if max selection number is reached
-		clearValuesOnEsc: React.PropTypes.bool	   // if true pressing esc when the selector is focused and closed will clear selected values
+		clearValuesOnEsc: React.PropTypes.bool, 	   // if true pressing esc when the selector is focused and closed will clear selected values
+		deletablePopover: React.PropTypes.node       // Popover overlay for deletable X icon
 	},
 
 	getDefaultProps () {
@@ -897,6 +898,7 @@ var Select = React.createClass({
 					renderer: renderLabel,
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: onOptionLabelClick,
+					overlay: this.props.deletablePopover,
 					onRemove: onRemove,
 					disabled: this.props.disabled,
 					deletable: !this.state.isReadOnly

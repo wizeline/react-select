@@ -149,7 +149,8 @@ var Select = React.createClass({
 		listReadOnlyMode: React.PropTypes.bool, // Non editable list mode currently implemented for List select only
 		maxMultiSelection: React.PropTypes.number, // Number of maximum allowed options to select on multi mode
 		replaceIfMax: React.PropTypes.bool, // Replace selected values if max selection number is reached
-		clearValuesOnEsc: React.PropTypes.bool // if true pressing esc when the selector is focused and closed will clear selected values
+		clearValuesOnEsc: React.PropTypes.bool, // if true pressing esc when the selector is focused and closed will clear selected values
+		deletablePopover: React.PropTypes.node // Popover overlay for deletable X icon
 	},
 
 	getDefaultProps: function getDefaultProps() {
@@ -986,6 +987,7 @@ var Select = React.createClass({
 					renderer: renderLabel,
 					optionLabelClick: !!this.props.onOptionLabelClick,
 					onOptionLabelClick: onOptionLabelClick,
+					overlay: this.props.deletablePopover,
 					onRemove: onRemove,
 					disabled: this.props.disabled,
 					deletable: !this.state.isReadOnly
@@ -1125,7 +1127,8 @@ var Value = React.createClass({
 		option: React.PropTypes.object.isRequired, // option passed to component
 		optionLabelClick: React.PropTypes.bool, // indicates if onOptionLabelClick should be handled
 		renderer: React.PropTypes.func, // method to render option label passed to ReactSelect
-		deletable: React.PropTypes.bool // indicates if the value can be deleted
+		deletable: React.PropTypes.bool, // indicates if the value can be deleted
+		overlay: React.PropTypes.node // Popover overlay for deletable X icon
 	},
 
 	blockEvent: function blockEvent(event) {
@@ -1136,6 +1139,20 @@ var Value = React.createClass({
 		if (!this.props.disabled) {
 			this.props.onRemove(event);
 		}
+	},
+
+	getInitialState: function getInitialState() {
+		return {
+			popOverOpen: false
+		};
+	},
+
+	_showPopover: function _showPopover() {
+		this.setState({ popOverOpen: true });
+	},
+
+	_hidePopover: function _hidePopover() {
+		this.setState({ popOverOpen: false });
 	},
 
 	render: function render() {
@@ -1162,16 +1179,20 @@ var Value = React.createClass({
 		}
 
 		var removeIcon;
+		var popOverContent = this.state.popOverOpen ? this.props.overlay : null;
 		if (this.props.deletable) {
 			removeIcon = React.createElement('span', { className: 'Select-item-icon',
 				onMouseDown: this.blockEvent,
+				onMouseEnter: this._showPopover,
+				onMouseLeave: this._hidePopover,
 				onClick: this.handleOnRemove,
 				onTouchEnd: this.handleOnRemove }, '×');
 		}
 
 		return React.createElement('div', { className: classes('Select-item', this.props.option.className),
 			style: this.props.option.style,
-			title: this.props.option.title }, removeIcon, React.createElement('span', { className: 'Select-item-label' }, label));
+			title: this.props.option.title,
+			onMouseOut: this._hidePopover }, popOverContent, removeIcon, React.createElement('span', { className: 'Select-item-label' }, label));
 	}
 
 });
