@@ -26,19 +26,19 @@ var Value = React.createClass({
 		}
 	},
 
-  getInitialState () {
-    return {
-      popOverOpen: false
-    };
-  },
+	getInitialState () {
+		return {
+			popOverOpen: false
+		};
+	},
 
-  _showPopover () {
-    this.setState({ popOverOpen: true });
-  },
+	_showPopover () {
+		this.setState({ popOverOpen: true });
+	},
 
-  _hidePopover () {
-    this.setState({ popOverOpen: false });
-  },
+	_hidePopover () {
+		this.setState({ popOverOpen: false });
+	},
 
 	render () {
 		var label = this.props.option.label;
@@ -79,7 +79,7 @@ var Value = React.createClass({
 				{ className: 'Select-item-icon',
 					onMouseDown: this.blockEvent,
 					onMouseEnter: this._showPopover,
-	        onMouseLeave: this._hidePopover,
+					onMouseLeave: this._hidePopover,
 					onClick: this.handleOnRemove,
 					onTouchEnd: this.handleOnRemove },
 				'×'
