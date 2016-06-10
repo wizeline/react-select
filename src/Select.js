@@ -901,7 +901,8 @@ var Select = React.createClass({
 					overlay: this.props.deletablePopover,
 					onRemove: onRemove,
 					disabled: this.props.disabled,
-					deletable: !this.state.isReadOnly
+					deletable: !this.state.isReadOnly,
+					isItemDeletable: this.props.isItemDeletable
 				});
 				value.push(valueComponent);
 			}, this);
