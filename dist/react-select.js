@@ -990,7 +990,8 @@ var Select = React.createClass({
 					overlay: this.props.deletablePopover,
 					onRemove: onRemove,
 					disabled: this.props.disabled,
-					deletable: !this.state.isReadOnly
+					deletable: !this.state.isReadOnly,
+					isItemDeletable: this.props.isItemDeletable
 				});
 				value.push(valueComponent);
 			}, this);
@@ -1128,7 +1129,8 @@ var Value = React.createClass({
 		optionLabelClick: React.PropTypes.bool, // indicates if onOptionLabelClick should be handled
 		renderer: React.PropTypes.func, // method to render option label passed to ReactSelect
 		deletable: React.PropTypes.bool, // indicates if the value can be deleted
-		overlay: React.PropTypes.node // Popover overlay for deletable X icon
+		overlay: React.PropTypes.node, // Popover overlay for deletable X icon
+		isItemDeletable: React.PropTypes.funct // method to individually check if an item is deletable
 	},
 
 	blockEvent: function blockEvent(event) {
@@ -1180,7 +1182,7 @@ var Value = React.createClass({
 
 		var removeIcon;
 		var popOverContent = this.state.popOverOpen ? this.props.overlay : null;
-		if (this.props.deletable) {
+		if (this.props.isItemDeletable && this.props.isItemDeletable(this.props.option) || this.props.deletable) {
 			removeIcon = React.createElement('span', { className: 'Select-item-icon',
 				onMouseDown: this.blockEvent,
 				onMouseEnter: this._showPopover,
